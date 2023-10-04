@@ -35,20 +35,10 @@ pub fn hex_to_base64(s: &str) -> String {
 /// Each pair of characters in the input hex string is expected to represent a valid byte.
 /// Ensure the input string adheres to hexadecimal conventions and contains no invalid characters.
 pub fn hex_to_bytes(hex: &str) -> Vec<u8> {
-    let mut output = vec![];
-    let chars = hex.chars();
-    let mut iter = chars.into_iter();
-    // iterate over two characters at a time, convert to byte.
-    while let (Some(c1), Some(c2)) = (iter.next(), iter.next()) {
-        // combine c1 and c2 into &str
-        let combined = format!("{}{}", c1, c2);
-        let byte = match u8::from_str_radix(&combined, 16) {
-            Ok(v) => v,
-            Err(_) => panic!("Invalid hex string"),
-        };
-        output.push(byte);
-    }
-    output
+    (0..hex.len())
+        .step_by(2)
+        .map(|i| u8::from_str_radix(&hex[i..i + 2], 16).unwrap())
+        .collect()
 }
 
 /// Converts bytes into Base64.
